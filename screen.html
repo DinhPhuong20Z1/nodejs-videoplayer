@@ -12,7 +12,7 @@
 <body>
     <h1>Screen</h1>
     <button onclick="thanks()">thanks!</button>
-    <video id="videoPlayer2" width="650">
+    <video id="videoPlayer2" width="650"  >
         <source src="/video" type="video/mp4" />
     </video>
     <button onclick="playVid()" type="button">Play Video</button>
@@ -23,11 +23,9 @@
         var socket = io()
 
         socket.on('hello', (data) => {
-            console.log(data)
             socket.emit('registerScreen', 'screen')
         })
         socket.on('fromRemote', (data) => {
-            console.log(data)
         })
         socket.on('remoteWantsNewColor', (data) => {
             whoChangedMyColor = data
@@ -42,10 +40,17 @@
         
         let fmData = false;
 
-        socket.on('remoteWantsVideo', (data) => {
-            console.log('data', data)
-            let myVideo2 = document.getElementById("videoPlayer2");
+        
 
+        
+
+        // function playVid() {
+            let myVideo2 = document.getElementById("videoPlayer2");
+            // console.log('myVideo2.play();',myVideo2.play());
+            // if(!fmData) {
+            //     myVideo2.play();
+            // }
+            socket.on('remoteWantsVideo', (data) => {
             // myVideo2.currentTime = data.currentTime;
             myVideo2.muted = data.muted;
             myVideo2.volume = data.volume;
@@ -60,19 +65,13 @@
             }
             // myVideo2.play(); 
         })
+            
+        // }
 
         
+       
 
-        function playVid() {
-            let myVideo2 = document.getElementById("videoPlayer2");
-            console.log('myVideo2.play();',myVideo2.play());
-            if(!fmData) {
-                myVideo2.play();
-            }
-            
-        }
-
-        playVid()
+        // playVid()
 
         
 
