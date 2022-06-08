@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,29 +8,75 @@
     <title>Screen</title>
     <script src="/socket.io/socket.io.js"></script>
 </head>
+
 <body>
     <h1>Screen</h1>
     <button onclick="thanks()">thanks!</button>
+    <video id="videoPlayer2" width="650">
+        <source src="/video" type="video/mp4" />
+    </video>
+    <button onclick="playVid()" type="button">Play Video</button>
+
+    
     <script>
         var whoChangedMyColor
         var socket = io()
-        
+
         socket.on('hello', (data) => {
             console.log(data)
-            socket.emit('registerScreen','screen')
+            socket.emit('registerScreen', 'screen')
         })
         socket.on('fromRemote', (data) => {
             console.log(data)
         })
         socket.on('remoteWantsNewColor', (data) => {
             whoChangedMyColor = data
-            var color = '#'+Math.random().toString(16).substr(-6)
+            var color = '#' + Math.random().toString(16).substr(-6)
             document.body.style.background = color
         })
 
         let thanks = () => {
-            socket.emit('thanks',whoChangedMyColor)
+            socket.emit('thanks', whoChangedMyColor)
         }
+
+        
+        let fmData = false;
+
+        socket.on('remoteWantsVideo', (data) => {
+            console.log('data', data)
+            let myVideo2 = document.getElementById("videoPlayer2");
+
+            // myVideo2.currentTime = data.currentTime;
+            myVideo2.muted = data.muted;
+            myVideo2.volume = data.volume;
+            fmData = data.paused;
+            if (!data.paused) {
+                myVideo2.currentTime = data.currentTime;
+                myVideo2.play();
+               
+            } else {
+                myVideo2.currentTime = data.currentTime;
+                myVideo2.pause();
+            }
+            // myVideo2.play(); 
+        })
+
+        
+
+        function playVid() {
+            let myVideo2 = document.getElementById("videoPlayer2");
+            console.log('myVideo2.play();',myVideo2.play());
+            if(!fmData) {
+                myVideo2.play();
+            }
+            
+        }
+
+        playVid()
+
+        
+
     </script>
 </body>
+
 </html>
