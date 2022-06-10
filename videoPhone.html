@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>VideoPhone</title>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+
+  <body>
+    <h1>VideoPhone</h1>
+
+    <video id="videoPlayer" width="650" controls>
+      <source src="/video" type="video/mp4" />
+    </video>
+
+    <script>
+      var socket = io();
+
+      socket.on("marker", (data) => {
+        console.log(data);
+      });
+
+      socket.on("hello", (data) => {
+        console.log(data);
+      });
+      // socket.on("ClickPlayTv", (data) => {
+      //   console.log('data',data);
+      // });
+
+      socket.emit("changePhone");
+
+      window.addEventListener(
+        "load",
+        function () {
+          var myVideo = document.getElementById("videoPlayer");
+          myVideo.addEventListener(
+            "timeupdate",
+            function () {
+              let data = {};
+              checkPhone = true;
+              socket.on("CheckPlayPhone", (checkTv) => {
+                checkPhone = false;
+                if (checkTv) {
+                  data = {
+                    paused: myVideo.paused,
+                    currentTime: myVideo.currentTime,
+                    muted: myVideo.muted,
+                    volume: myVideo.volume,
+                  };
+                  socket.emit("ClickPlayPhone", data);
+                }
+              });
+
+              const checkP = () => {
+                if (checkPhone) {
+                  data = {
+                    paused: myVideo.paused,
+                    currentTime: myVideo.currentTime,
+                    muted: myVideo.muted,
+                    volume: myVideo.volume,
+                  };
+                  socket.emit("ClickPlayPhone", data);
+                }
+              };
+
+              setInterval(checkP, 1000);
+              // socket.on("ClickPlayTv", (data, checkTv, checkPhone) => {
+              //   checkP = checkPhone;
+              // });
+              // console.log(socket.on("ClickPlayTv", (data, checkTv, checkPhone) => {}))
+              // // if(socket.on("ClickPlayTv", (data, checkTv, checkPhone) => {}).disconnected) {
+              //   data = {
+              //   paused: myVideo.paused,
+              //   currentTime: myVideo.currentTime,
+              //   muted: myVideo.muted,
+              //   volume: myVideo.volume,
+              // };
+
+              // socket.emit("ClickPlayPhone", data);
+              // }
+            },
+            false
+          );
+        },
+        false
+      );
+
+      socket.on("ClickPlayTv", (data) => {
+        // console.log("data", data);
+        let myVideo2 = document.getElementById("videoPlayer");
+
+        // myVideo2.currentTime = data.currentTime;
+        myVideo2.muted = data.muted;
+        myVideo2.volume = data.volume;
+        fmData = data.paused;
+        if (!data.paused) {
+          myVideo2.currentTime = data.currentTime;
+          myVideo2.play();
+        } else {
+          myVideo2.currentTime = data.currentTime;
+          myVideo2.pause();
+        }
+        // myVideo2.play();
+      });
+    </script>
+  </body>
+</html>

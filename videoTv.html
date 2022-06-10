@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Video TV</title>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+
+  <body>
+    <h1>Video TV</h1>
+    <button onclick="playVid()" type="button">Phát video</button>
+    <button onclick="ClickPlayTv()">TV gửi yêu cầu</button>
+    <video id="videoPlayer2" width="650" controls muted>
+      <source src="/video" type="video/mp4" />
+    </video>
+
+    <script>
+      var whoChangedMyColor;
+      var socket = io();
+
+      socket.on("hello", (data) => {
+        socket.emit("registerScreen", "screen");
+      });
+      // socket.on("fromRemote", (data) => {
+      //   console.log(data);
+      // });
+
+      // let ClickPlayTv = () => {
+      //   socket.emit("ClickPlayTv", {data: 1});
+      // };
+
+      let fmData = false;
+
+      socket.on("ClickPlayPhone", (data, checkScreen, checkMorote) => {
+        // console.log("data", data);
+        let myVideo2 = document.getElementById("videoPlayer2");
+
+        // myVideo2.currentTime = data.currentTime;
+        myVideo2.muted = data.muted;
+        myVideo2.volume = data.volume;
+        fmData = data.paused;
+        if (!data.paused) {
+          myVideo2.currentTime = data.currentTime;
+          myVideo2.play();
+        } else {
+          myVideo2.currentTime = data.currentTime;
+          myVideo2.pause();
+        }
+        // myVideo2.play();
+      });
+
+      function playVid() {
+        let myVideo2 = document.getElementById("videoPlayer2");
+        if (!fmData) {
+          myVideo2.play();
+        }
+      }
+
+      // playVid();
+
+      window.addEventListener(
+        "load",
+        function () {
+          var myVideo = document.getElementById("videoPlayer2");
+          myVideo.addEventListener(
+            "timeupdate",
+            function () {
+              let data = {};
+              checkTv = true;
+              // socket.on("ClickPlayPhone", (data, checkTv, checkPhone) => {
+              //   checkTv = checkTv;
+              // });
+              socket.on("CheckPlayPhone", (checkPhone) => {
+                checkTv = false;
+                if (checkPhone) {
+                  data = {
+                    paused: myVideo.paused,
+                    currentTime: myVideo.currentTime,
+                    muted: myVideo.muted,
+                    volume: myVideo.volume,
+                  };
+
+                  socket.emit("ClickPlayTv", data);
+                }
+              });
+
+              const checkT = () => {
+                if (checkTv) {
+                  data = {
+                    paused: myVideo.paused,
+                    currentTime: myVideo.currentTime,
+                    muted: myVideo.muted,
+                    volume: myVideo.volume,
+                  };
+                  socket.emit("ClickPlayTv", data);
+                }
+              };
+
+              setInterval(checkT, 1000);
+              // if(socket.on("ClickPlayPhone", (data, checkTv, checkPhone) => {}).disconnected) {
+              //   console.log('111');
+              //   data = {
+              //   paused: myVideo.paused,
+              //   currentTime: myVideo.currentTime,
+              //   muted: myVideo.muted,
+              //   volume: myVideo.volume,
+              // };
+
+              // socket.emit("ClickPlayTv", data);
+              // }
+            },
+            false
+          );
+        },
+        false
+      );
+    </script>
+  </body>
+</html>
