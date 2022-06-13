@@ -8,8 +8,6 @@ var videoTv;
 var checkPhone = false;
 var checkTv = false;
 
-
-
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/videoTv.html");
 });
@@ -17,68 +15,69 @@ app.get("/r", (req, res) => {
   res.sendFile(__dirname + "/videoPhone.html");
 });
 
-var mConn = new Map()
+var mConn = new Map();
 
 io.on("connection", (socket) => {
-    mConn.set(socket.id, socket)
-    // console.log("MapData: " + JSON.stringify(mConn));
-    // mConn.forEach((s, id) => {
-    //     console.log("S: " + s + " - ID: ", id);
-    // })
-    console.log(`${socket.id} connected!`);
-    socket.emit("hello", { hello: "world" });
-    socket.on("hello yourself", (data) => {
-        console.log(data);
+  mConn.set(socket.id, socket);
+  // console.log("MapData: " + JSON.stringify(mConn));
+  // mConn.forEach((s, id) => {
+  //     console.log("S: " + s + " - ID: ", id);
+  // })
+  console.log(`${socket.id} connected!`);
+  socket.emit("hello", { hello: "world" });
+  socket.on("hello yourself", (data) => {
+    console.log(data);
   });
-
 
   socket.on("registerScreen", (data) => {
     videoPhone = {};
     videoPhone.id = socket.id;
   });
 
-//   socket.on("sendToScreen", (data) => {
-//     io.to(videoPhone.id).emit("fromRemote", data); // relay from remote to videoPhone!
-//   });
+  //   socket.on("sendToScreen", (data) => {
+  //     io.to(videoPhone.id).emit("fromRemote", data); // relay from remote to videoPhone!
+  //   });
 
-  
   socket.on("changePhone", () => {
     videoTv = socket.id;
 
     // io.to(videoPhone.id).emit("remoteWantsNewColor", socket.id);
   });
 
-  
   socket.on("ClickPlayPhone", (data) => {
-    io.to(videoPhone.id).emit("ClickPlayPhone", data, checkTv = false, checkPhone = true,);
-    // mConn.forEach((s, id) => {
-    //     if (socket.id != id) {
-    //         io.emit
-    //     }
-    //     console.log("S: " + s + " - ID: ", id);
-    // })
-    // socket.disconnect();
-    io.to(videoPhone.id).emit("CheckPlayPhone", checkPhone = false,);
-    // videoTv.disconnect();
-    
+    io.to(videoPhone.id).emit(
+      "ClickPlayPhone",
+      data,
+      (checkTv = false),
+      (checkPhone = true)
+    );
+    io.to(videoPhone.id).emit("CheckPlayPhone", (checkPhone = false));
   });
-  
-  socket.on('ClickPlayTv', (data) => {
-        io.to(videoTv).emit('ClickPlayTv', data, checkTv = true, checkPhone = false)
 
-        if (socket[videoTv]) {
-            socket[videoTv].disconnect();
-        }
-        
-        io.to(videoTv).emit("CheckPlayTV", checkTv = false,);
-        
+  socket.on("ClickPlayTv", (data) => {
+    io.to(videoTv).emit(
+      "ClickPlayTv",
+      data,
+      (checkTv = true),
+      (checkPhone = false)
+    );
 
-       
-    })
+    if (socket[videoTv]) {
+      socket[videoTv].disconnect();
+    }
 
-    
+    io.to(videoTv).emit("CheckPlayTV", (checkTv = false));
+  });
 
-    
+  socket.on("ClickSeekPhone", (data) => {
+    io.to(videoPhone.id).emit("ClickSeekPhone", data);
+    io.to(videoPhone.id).emit("CheckSeekPhone", (checkPhone = false));
+  });
+
+  socket.on("ClickSeekTv", (data) => {
+    io.to(videoTv).emit("ClickSeekTv", data);
+    io.to(videoTv).emit("CheckSeekTv", (checkTv = false));
+  });
 
   socket.on("disconnect", (data) => {
     // mConn.delete(socket.id);
@@ -88,7 +87,6 @@ io.on("connection", (socket) => {
     console.log(`${socket.id} disconnected. :(`);
   });
 });
-
 
 app.get("/video", function (req, res) {
   // Ensure there is a range given for the video

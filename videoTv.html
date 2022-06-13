@@ -12,7 +12,7 @@
     <h1>Video TV</h1>
     <button onclick="playVid()" type="button">Phát video</button>
     <button onclick="ClickPlayTv()">TV gửi yêu cầu</button>
-    <video id="videoPlayer2" width="650" controls muted>
+    <video id="videoPlayer2" width="650" controls  onseeking="myFunction()" >
       <source src="/video" type="video/mp4" />
     </video>
 
@@ -34,22 +34,25 @@
       let fmData = false;
 
       socket.on("ClickPlayPhone", (data, checkScreen, checkMorote) => {
-        // console.log("data", data);
         let myVideo2 = document.getElementById("videoPlayer2");
-
-        // myVideo2.currentTime = data.currentTime;
         myVideo2.muted = data.muted;
         myVideo2.volume = data.volume;
         fmData = data.paused;
         if (!data.paused) {
-          myVideo2.currentTime = data.currentTime;
+          // myVideo2.currentTime = data.currentTime;
           myVideo2.play();
+          // socket.on("ClickSeekPhone", (data) => {
+          //   let myVideo2 = document.getElementById("videoPlayer2");
+          //   myVideo2.currentTime = data;
+          // });
         } else {
-          myVideo2.currentTime = data.currentTime;
+          // myVideo2.currentTime = data.currentTime;
           myVideo2.pause();
         }
         // myVideo2.play();
       });
+
+      
 
       function playVid() {
         let myVideo2 = document.getElementById("videoPlayer2");
@@ -63,6 +66,7 @@
       window.addEventListener(
         "load",
         function () {
+          console.log('1123');
           var myVideo = document.getElementById("videoPlayer2");
           myVideo.addEventListener(
             "timeupdate",
@@ -77,7 +81,7 @@
                 if (checkPhone) {
                   data = {
                     paused: myVideo.paused,
-                    currentTime: myVideo.currentTime,
+                    // currentTime: myVideo.currentTime,
                     muted: myVideo.muted,
                     volume: myVideo.volume,
                   };
@@ -90,7 +94,7 @@
                 if (checkTv) {
                   data = {
                     paused: myVideo.paused,
-                    currentTime: myVideo.currentTime,
+                    // currentTime: myVideo.currentTime,
                     muted: myVideo.muted,
                     volume: myVideo.volume,
                   };
@@ -98,24 +102,29 @@
                 }
               };
 
-              setInterval(checkT, 1000);
-              // if(socket.on("ClickPlayPhone", (data, checkTv, checkPhone) => {}).disconnected) {
-              //   console.log('111');
-              //   data = {
-              //   paused: myVideo.paused,
-              //   currentTime: myVideo.currentTime,
-              //   muted: myVideo.muted,
-              //   volume: myVideo.volume,
-              // };
-
-              // socket.emit("ClickPlayTv", data);
-              // }
+              setInterval(checkT, 0);
             },
             false
           );
+          // myVideo.onseeking = (event) => {
+          //   console.log('111',event);
+          //   let data = myVideo.currentTime;
+          //   socket.emit("ClickSeekTv", data);
+
+          // };
         },
         false
       );
+
+      function myFunction() {
+        let myVideo = document.getElementById("videoPlayer2");
+        // myVideo.onseeking = (event) => {
+            console.log('111',event);
+            let data = myVideo.currentTime;
+            socket.emit("ClickSeekTv", data);
+
+          // };
+      }
     </script>
   </body>
 </html>

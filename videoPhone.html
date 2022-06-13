@@ -35,6 +35,7 @@
         "load",
         function () {
           var myVideo = document.getElementById("videoPlayer");
+          
           myVideo.addEventListener(
             "timeupdate",
             function () {
@@ -45,7 +46,7 @@
                 if (checkTv) {
                   data = {
                     paused: myVideo.paused,
-                    currentTime: myVideo.currentTime,
+                    // currentTime: myVideo.currentTime,
                     muted: myVideo.muted,
                     volume: myVideo.volume,
                   };
@@ -57,7 +58,7 @@
                 if (checkPhone) {
                   data = {
                     paused: myVideo.paused,
-                    currentTime: myVideo.currentTime,
+                    // currentTime: myVideo.currentTime,
                     muted: myVideo.muted,
                     volume: myVideo.volume,
                   };
@@ -65,24 +66,16 @@
                 }
               };
 
-              setInterval(checkP, 1000);
-              // socket.on("ClickPlayTv", (data, checkTv, checkPhone) => {
-              //   checkP = checkPhone;
-              // });
-              // console.log(socket.on("ClickPlayTv", (data, checkTv, checkPhone) => {}))
-              // // if(socket.on("ClickPlayTv", (data, checkTv, checkPhone) => {}).disconnected) {
-              //   data = {
-              //   paused: myVideo.paused,
-              //   currentTime: myVideo.currentTime,
-              //   muted: myVideo.muted,
-              //   volume: myVideo.volume,
-              // };
+              setInterval(checkP, 0);
 
-              // socket.emit("ClickPlayPhone", data);
-              // }
             },
             false
           );
+          myVideo.onseeking = (event) => {
+            let data = myVideo.currentTime;
+            socket.emit("ClickSeekPhone", data);
+
+          };
         },
         false
       );
@@ -96,14 +89,22 @@
         myVideo2.volume = data.volume;
         fmData = data.paused;
         if (!data.paused) {
-          myVideo2.currentTime = data.currentTime;
+          // myVideo2.currentTime = data.currentTime;
           myVideo2.play();
+          
         } else {
-          myVideo2.currentTime = data.currentTime;
+          // myVideo2.currentTime = data.currentTime;
           myVideo2.pause();
         }
         // myVideo2.play();
       });
+
+      socket.on("ClickSeekTv", (data) => {
+        let myVideo2 = document.getElementById("videoPlayer");
+        myVideo2.currentTime = data;
+      });
+
+      
     </script>
   </body>
 </html>
