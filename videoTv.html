@@ -12,7 +12,7 @@
     <h1>Video TV</h1>
     <button onclick="playVid()" type="button">Phát video</button>
     <button onclick="ClickPlayTv()">TV gửi yêu cầu</button>
-    <video id="videoPlayer2" width="650" controls  onseeking="myFunction()" >
+    <video id="videoPlayer2" width="650" controls>
       <source src="/video" type="video/mp4" />
     </video>
 
@@ -41,10 +41,6 @@
         if (!data.paused) {
           // myVideo2.currentTime = data.currentTime;
           myVideo2.play();
-          // socket.on("ClickSeekPhone", (data) => {
-          //   let myVideo2 = document.getElementById("videoPlayer2");
-          //   myVideo2.currentTime = data;
-          // });
         } else {
           // myVideo2.currentTime = data.currentTime;
           myVideo2.pause();
@@ -52,7 +48,10 @@
         // myVideo2.play();
       });
 
-      
+      socket.on("ClickSeekPhone", (data) => {
+        let myVideo2 = document.getElementById("videoPlayer2");
+        myVideo2.currentTime = data;
+      });
 
       function playVid() {
         let myVideo2 = document.getElementById("videoPlayer2");
@@ -66,7 +65,6 @@
       window.addEventListener(
         "load",
         function () {
-          console.log('1123');
           var myVideo = document.getElementById("videoPlayer2");
           myVideo.addEventListener(
             "timeupdate",
@@ -103,11 +101,22 @@
               };
 
               setInterval(checkT, 0);
+              // if(socket.on("ClickPlayPhone", (data, checkTv, checkPhone) => {}).disconnected) {
+              //   console.log('111');
+              //   data = {
+              //   paused: myVideo.paused,
+              //   currentTime: myVideo.currentTime,
+              //   muted: myVideo.muted,
+              //   volume: myVideo.volume,
+              // };
+
+              // socket.emit("ClickPlayTv", data);
+              // }
             },
             false
           );
           // myVideo.onseeking = (event) => {
-          //   console.log('111',event);
+          //   console.log('111');
           //   let data = myVideo.currentTime;
           //   socket.emit("ClickSeekTv", data);
 
@@ -115,16 +124,6 @@
         },
         false
       );
-
-      function myFunction() {
-        let myVideo = document.getElementById("videoPlayer2");
-        // myVideo.onseeking = (event) => {
-            console.log('111',event);
-            let data = myVideo.currentTime;
-            socket.emit("ClickSeekTv", data);
-
-          // };
-      }
     </script>
   </body>
 </html>
