@@ -88,7 +88,6 @@
                     muted: myVideo.muted,
                     volume: myVideo.volume,
                   };
-
                   socket.emit("ClickPlayTv", data);
                 }
               });
@@ -105,7 +104,7 @@
                 }
               };
 
-              setInterval(checkT, 0);
+              setInterval(checkT, 10000);
             },
             false
           );
