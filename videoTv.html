@@ -12,7 +12,7 @@
     <h1>Video TV</h1>
     <button onclick="playVid()" type="button">Phát video</button>
     <button onclick="ClickPlayTv()">TV gửi yêu cầu</button>
-    <video id="videoPlayer2" width="650" controls>
+    <video id="videoPlayer2" width="650" controls onseeking="myFunction()">
       <source src="/video" type="video/mp4" />
     </video>
 
@@ -47,8 +47,13 @@
         }
         // myVideo2.play();
       });
+      var a = true;
+      var b = 1;
+      var c = 2;
 
       socket.on("ClickSeekPhone", (data) => {
+        a = false;
+        b = Math.random();
         let myVideo2 = document.getElementById("videoPlayer2");
         myVideo2.currentTime = data;
       });
@@ -101,17 +106,6 @@
               };
 
               setInterval(checkT, 0);
-              // if(socket.on("ClickPlayPhone", (data, checkTv, checkPhone) => {}).disconnected) {
-              //   console.log('111');
-              //   data = {
-              //   paused: myVideo.paused,
-              //   currentTime: myVideo.currentTime,
-              //   muted: myVideo.muted,
-              //   volume: myVideo.volume,
-              // };
-
-              // socket.emit("ClickPlayTv", data);
-              // }
             },
             false
           );
@@ -124,6 +118,29 @@
         },
         false
       );
+
+      async function myFunction() {
+        console.log("calling", a);
+        console.log("calling", b);
+        console.log("calling", c);
+        if (a) {
+          console.log("da vao 1");
+          let myVideo = document.getElementById("videoPlayer2");
+          let data = myVideo.currentTime;
+          socket.emit("ClickSeekTv", data);
+        }
+
+        let bc = b - c;
+
+        if (a == false && bc === 0) {
+          console.log("da vao");
+          let myVideo = document.getElementById("videoPlayer2");
+          let data = myVideo.currentTime;
+          console.log("data", data);
+          socket.emit("ClickSeekTv", data);
+        }
+        c = b;
+      }
     </script>
   </body>
 </html>

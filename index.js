@@ -71,12 +71,10 @@ io.on("connection", (socket) => {
 
   socket.on("ClickSeekPhone", (data) => {
     io.to(videoPhone.id).emit("ClickSeekPhone", data);
-    io.to(videoPhone.id).emit("CheckSeekPhone", (checkPhone = false));
   });
 
   socket.on("ClickSeekTv", (data) => {
     io.to(videoTv).emit("ClickSeekTv", data);
-    io.to(videoTv).emit("CheckSeekTv", (checkTv = false));
   });
 
   socket.on("disconnect", (data) => {
@@ -85,6 +83,12 @@ io.on("connection", (socket) => {
     //     console.log("S: " + s + " - ID: ", id);
     // })
     console.log(`${socket.id} disconnected. :(`);
+  });
+
+  io.on('connection', (socket) => {
+    socket.on('error', (error) => {
+      console.log(`${error}  :(`);
+    });
   });
 });
 
