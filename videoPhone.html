@@ -18,57 +18,38 @@
     <script>
       var socket = io();
 
-      
-
-
       socket.on("ClickPlayTv", (data) => {
-        // console.log("data", data);
         let myVideo2 = document.getElementById("videoPlayer");
 
-        // myVideo2.currentTime = data.currentTime;
         myVideo2.muted = data.muted;
         myVideo2.volume = data.volume;
         fmData = data.paused;
-        
+
         if (!data.paused) {
-          // myVideo2.currentTime = data.currentTime;
           myVideo2.play();
         } else {
-          // myVideo2.currentTime = data.currentTime;
           myVideo2.pause();
         }
-        // myVideo2.play();
       });
-      // socket.on("ClickPlayTv", (data) => {
-      //   console.log('data',data);
-      // });
 
       socket.emit("changePhone");
 
       let a = true;
       var b = 1;
       var c = 2;
-      // function resolveAfter2Seconds() {
-          
-       
-        socket.on("ClickSeekTv", (data) => {
-          console.log('data',data);
-          a = false;
-          b = Math.random();
-          console.log('aaaaa',a);
-          let myVideo2 = document.getElementById("videoPlayer");
-          myVideo2.currentTime = data;
-        });
-      // }
-      // resolveAfter2Seconds();
 
-      
+      socket.on("ClickSeekTv", (data) => {
+        a = false;
+        b = Math.random();
+        let myVideo2 = document.getElementById("videoPlayer");
+        myVideo2.currentTime = data;
+      });
 
       window.addEventListener(
         "load",
         function () {
           var myVideo = document.getElementById("videoPlayer");
-          
+
           myVideo.addEventListener(
             "timeupdate",
             function () {
@@ -79,7 +60,6 @@
                 if (checkTv) {
                   data = {
                     paused: myVideo.paused,
-                    // currentTime: myVideo.currentTime,
                     muted: myVideo.muted,
                     volume: myVideo.volume,
                   };
@@ -91,7 +71,6 @@
                 if (checkPhone) {
                   data = {
                     paused: myVideo.paused,
-                    // currentTime: myVideo.currentTime,
                     muted: myVideo.muted,
                     volume: myVideo.volume,
                   };
@@ -100,48 +79,27 @@
               };
 
               setTimeout(checkP, 0);
-
             },
             false
           );
-          // myVideo.onseeking = (event) => {
-          //   let data = myVideo.currentTime;
-          //   socket.emit("ClickSeekPhone", data);
-
-          // };
         },
         false
       );
 
-      
-
-
-      async function myFunction() {
-        
-        console.log('calling',a);
-        console.log('calling', b);
-        console.log('calling', c);
-        // const result = await resolveAfter2Seconds();
-        // console.log(result);
-        // setTimeout(() => {
-          if(a) {
-            let myVideo = document.getElementById("videoPlayer");
-            let data = myVideo.currentTime;
+      function myFunction() {
+        if (a) {
+          let myVideo = document.getElementById("videoPlayer");
+          let data = myVideo.currentTime;
           socket.emit("ClickSeekPhone", data);
-          }
-          let bc =  b - c ;
-          if(a == false && bc === 0 ) {
-            console.log('da vao');
-            let myVideo = document.getElementById("videoPlayer");
-            let data = myVideo.currentTime;
+        }
+        let bc = b - c;
+        if (a == false && bc === 0) {
+          let myVideo = document.getElementById("videoPlayer");
+          let data = myVideo.currentTime;
           socket.emit("ClickSeekPhone", data);
-          }
-          c = b;
-        // }, 0);
-        
-       
+        }
+        c = b;
       }
-      
     </script>
   </body>
 </html>

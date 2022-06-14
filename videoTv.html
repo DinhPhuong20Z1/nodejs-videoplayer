@@ -10,26 +10,16 @@
 
   <body>
     <h1>Video TV</h1>
-    <button onclick="playVid()" type="button">Phát video</button>
-    <button onclick="ClickPlayTv()">TV gửi yêu cầu</button>
     <video id="videoPlayer2" width="650" controls onseeking="myFunction()">
       <source src="/video" type="video/mp4" />
     </video>
 
     <script>
-      var whoChangedMyColor;
       var socket = io();
 
       socket.on("hello", (data) => {
         socket.emit("registerScreen", "screen");
       });
-      // socket.on("fromRemote", (data) => {
-      //   console.log(data);
-      // });
-
-      // let ClickPlayTv = () => {
-      //   socket.emit("ClickPlayTv", {data: 1});
-      // };
 
       let fmData = false;
 
@@ -39,13 +29,10 @@
         myVideo2.volume = data.volume;
         fmData = data.paused;
         if (!data.paused) {
-          // myVideo2.currentTime = data.currentTime;
           myVideo2.play();
         } else {
-          // myVideo2.currentTime = data.currentTime;
           myVideo2.pause();
         }
-        // myVideo2.play();
       });
       var a = true;
       var b = 1;
@@ -58,15 +45,6 @@
         myVideo2.currentTime = data;
       });
 
-      function playVid() {
-        let myVideo2 = document.getElementById("videoPlayer2");
-        if (!fmData) {
-          myVideo2.play();
-        }
-      }
-
-      // playVid();
-
       window.addEventListener(
         "load",
         function () {
@@ -76,15 +54,11 @@
             function () {
               let data = {};
               checkTv = true;
-              // socket.on("ClickPlayPhone", (data, checkTv, checkPhone) => {
-              //   checkTv = checkTv;
-              // });
               socket.on("CheckPlayPhone", (checkPhone) => {
                 checkTv = false;
                 if (checkPhone) {
                   data = {
                     paused: myVideo.paused,
-                    // currentTime: myVideo.currentTime,
                     muted: myVideo.muted,
                     volume: myVideo.volume,
                   };
@@ -96,7 +70,6 @@
                 if (checkTv) {
                   data = {
                     paused: myVideo.paused,
-                    // currentTime: myVideo.currentTime,
                     muted: myVideo.muted,
                     volume: myVideo.volume,
                   };
@@ -108,22 +81,12 @@
             },
             false
           );
-          // myVideo.onseeking = (event) => {
-          //   console.log('111');
-          //   let data = myVideo.currentTime;
-          //   socket.emit("ClickSeekTv", data);
-
-          // };
         },
         false
       );
 
-      async function myFunction() {
-        console.log("calling", a);
-        console.log("calling", b);
-        console.log("calling", c);
+      function myFunction() {
         if (a) {
-          console.log("da vao 1");
           let myVideo = document.getElementById("videoPlayer2");
           let data = myVideo.currentTime;
           socket.emit("ClickSeekTv", data);
@@ -132,10 +95,8 @@
         let bc = b - c;
 
         if (a == false && bc === 0) {
-          console.log("da vao");
           let myVideo = document.getElementById("videoPlayer2");
           let data = myVideo.currentTime;
-          console.log("data", data);
           socket.emit("ClickSeekTv", data);
         }
         c = b;
