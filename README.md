@@ -4,7 +4,8 @@ https://developer.chrome.com/blog/autoplay-2/
 
 https://dev.to/raaynaldo/an-easy-way-to-understand-promise-in-javascript-215i
 
+sự kiện: 
+- https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/volumechange_event
+- https://www.w3schools.com/jsref/dom_obj_event.asp
 
-Vấn đề 
-1: videoPhone bắn socket dừng và tắt âm thanh cho videoTv bị chập chờn => có thể do socket bắn nhiều quá gây lag
-2: videoTv sau vài lần liên tục chuyển đoạn video bị chậm =>  giải pháp thao tác chậm lại
+Vấn đề : videoTv sau vài lần liên tục chuyển đoạn video bị chậm =>  giải pháp thao tác chậm lại

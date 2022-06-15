@@ -18,19 +18,7 @@
     <script>
       var socket = io();
 
-      socket.on("ClickPlayTv", (data) => {
-        let myVideo2 = document.getElementById("videoPlayer");
-
-        // myVideo2.muted = data.muted;
-        myVideo2.volume = data.volume;
-        fmData = data.paused;
-
-        // if (!data.paused) {
-        //   myVideo2.play();
-        // } else {
-        //   myVideo2.pause();
-        // }
-      });
+     
 
       socket.emit("changePhone");
 
@@ -46,7 +34,6 @@
       });
 
       socket.on("ClickStartTv", (data) => {
-        console.log('data',data);
         let myVideo2 = document.getElementById("videoPlayer");
         if (!data) {
           myVideo2.play();
@@ -54,11 +41,16 @@
       });
 
       socket.on("ClickPauseTv", (data) => {
-        console.log('data',data);
         let myVideo2 = document.getElementById("videoPlayer");
         if (data) {
           myVideo2.pause();
         } 
+      });
+
+      socket.on("ClickMutedTv", (data, volume) => {
+        let myVideo2 = document.getElementById("videoPlayer");
+        myVideo2.muted = data;
+        myVideo2.volume = volume;
       });
 
 
@@ -77,51 +69,10 @@
 
       myVideo.addEventListener("volumechange", function() {
         let myVideo2 = document.getElementById("videoPlayer");
-        console.log('myVideo.muted',myVideo.muted);
+        let down = myVideo2.muted
+        let volume = myVideo2.volume
+        socket.emit("ClickMutedVideo", down, volume);       
       });
-
-      
-
-      window.addEventListener(
-        "load",
-        function () {
-          var myVideo = document.getElementById("videoPlayer");
-
-          myVideo.addEventListener(
-            "timeupdate",
-            function () {
-              let data = {};
-              checkPhone = true;
-              socket.on("CheckPlayPhone", (checkTv) => {
-                checkPhone = false;
-                if (checkTv) {
-                  data = {
-                    // paused: myVideo.paused,
-                    // muted: myVideo.muted,
-                    volume: myVideo.volume,
-                  };
-                  socket.emit("ClickPlayPhone", data);
-                }
-              });
-
-              const checkP = () => {
-                if (checkPhone) {
-                  data = {
-                    // paused: myVideo.paused,
-                    // muted: myVideo.muted,
-                    volume: myVideo.volume,
-                  };
-                  socket.emit("ClickPlayPhone", data);
-                }
-              };
-
-              setTimeout(checkP, 0);
-            },
-            false
-          );
-        },
-        false
-      );
 
       function myFunction() {
         if (a) {

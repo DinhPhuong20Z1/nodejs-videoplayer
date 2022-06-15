@@ -21,15 +21,7 @@
         socket.emit("registerScreen", "screen");
       });
 
-      let fmData = false;
-
-      socket.on("ClickPlayPhone", (data, checkScreen, checkMorote) => {
-        let myVideo2 = document.getElementById("videoPlayer2");
-        // myVideo2.muted = data.muted;
-        myVideo2.volume = data.volume;
-        fmData = data.paused;
-        
-      });
+      
       var a = true;
       var b = 1;
       var c = 2;
@@ -59,6 +51,12 @@
         }
       });
 
+      socket.on("ClickMutedVideo", (data, volume) => {
+        let myVideo2 = document.getElementById("videoPlayer2");
+        myVideo2.muted = data;
+        myVideo2.volume = volume;
+      });
+
       var myVideo = document.getElementById("videoPlayer2");
       myVideo.addEventListener("play", function(){
         
@@ -72,46 +70,15 @@
         socket.emit("ClickPauseTv", myVideo2.paused);
       });
 
-      window.addEventListener(
-        "load",
-        function () {
-          var myVideo = document.getElementById("videoPlayer2");
-          myVideo.addEventListener(
-            "timeupdate",
-            function () {
-              let data = {};
-              checkTv = true;
-              socket.on("CheckPlayPhone", (checkPhone) => {
-                checkTv = false;
-                if (checkPhone) {
-                  data = {
-                    // paused: myVideo.paused,
-                    // muted: myVideo.muted,
-                    volume: myVideo.volume,
-                  };
-                  socket.emit("ClickPlayTv", data);
-                }
-              });
+      myVideo.addEventListener("volumechange", function() {
+        let myVideo2 = document.getElementById("videoPlayer2");
+        let down = myVideo2.muted;
+        let volume = myVideo2.volume;
+        socket.emit("ClickMutedTv", down, volume);
+        
+      });
 
-              const checkT = () => {
-                if (checkTv) {
-                  data = {
-                    // paused: myVideo.paused,
-                    // muted: myVideo.muted,
-                    volume: myVideo.volume,
-                  };
-                  socket.emit("ClickPlayTv", data);
-                }
-              };
-
-              setTimeout(checkT, 0);
-            },
-            false
-          );
-        },
-        false
-      );
-
+      
       function myFunction() {
         if (a) {
           let myVideo = document.getElementById("videoPlayer2");

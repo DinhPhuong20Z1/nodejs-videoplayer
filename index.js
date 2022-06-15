@@ -44,30 +44,30 @@ io.on("connection", (socket) => {
     // io.to(videoPhone.id).emit("remoteWantsNewColor", socket.id);
   });
 
-  socket.on("ClickPlayPhone", (data) => {
-    io.to(videoPhone.id).emit(
-      "ClickPlayPhone",
-      data,
-      (checkTv = false),
-      (checkPhone = true)
-    );
-    io.to(videoPhone.id).emit("CheckPlayPhone", (checkPhone = false));
-  });
+  // socket.on("ClickPlayPhone", (data) => {
+  //   io.to(videoPhone.id).emit(
+  //     "ClickPlayPhone",
+  //     data,
+  //     (checkTv = false),
+  //     (checkPhone = true)
+  //   );
+  //   io.to(videoPhone.id).emit("CheckPlayPhone", (checkPhone = false));
+  // });
 
-  socket.on("ClickPlayTv", (data) => {
-    io.to(videoTv).emit(
-      "ClickPlayTv",
-      data,
-      (checkTv = true),
-      (checkPhone = false)
-    );
+  // socket.on("ClickPlayTv", (data) => {
+  //   io.to(videoTv).emit(
+  //     "ClickPlayTv",
+  //     data,
+  //     (checkTv = true),
+  //     (checkPhone = false)
+  //   );
 
-    if (socket[videoTv]) {
-      socket[videoTv].disconnect();
-    }
+  //   if (socket[videoTv]) {
+  //     socket[videoTv].disconnect();
+  //   }
 
-    io.to(videoTv).emit("CheckPlayTV", (checkTv = false));
-  });
+  //   io.to(videoTv).emit("CheckPlayTV", (checkTv = false));
+  // });
 
   socket.on("ClickSeekPhone", (data) => {
     io.to(videoPhone.id).emit("ClickSeekPhone", data);
@@ -85,6 +85,10 @@ io.on("connection", (socket) => {
     io.to(videoPhone.id).emit("ClickPauseVideo", data);
   });
 
+  socket.on("ClickMutedVideo", (data, volume) => {
+    io.to(videoPhone.id).emit("ClickMutedVideo", data, volume);
+  });
+
   socket.on("ClickStartTv", (data) => {
     io.to(videoTv).emit("ClickStartTv", data);
   });
@@ -92,6 +96,12 @@ io.on("connection", (socket) => {
   socket.on("ClickPauseTv", (data) => {
     io.to(videoTv).emit("ClickPauseTv", data);
   });
+
+  socket.on("ClickMutedTv", (data, volume) => {
+    io.to(videoTv).emit("ClickMutedTv", data, volume);
+  });
+
+  
 
   socket.on("disconnect", (data) => {
     // mConn.delete(socket.id);
