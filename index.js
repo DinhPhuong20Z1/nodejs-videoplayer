@@ -77,6 +77,22 @@ io.on("connection", (socket) => {
     io.to(videoTv).emit("ClickSeekTv", data);
   });
 
+  socket.on("ClickStartVideo", (data) => {
+    io.to(videoPhone.id).emit("ClickStartVideo", data);
+  });
+
+  socket.on("ClickPauseVideo", (data) => {
+    io.to(videoPhone.id).emit("ClickPauseVideo", data);
+  });
+
+  socket.on("ClickStartTv", (data) => {
+    io.to(videoTv).emit("ClickStartTv", data);
+  });
+
+  socket.on("ClickPauseTv", (data) => {
+    io.to(videoTv).emit("ClickPauseTv", data);
+  });
+
   socket.on("disconnect", (data) => {
     // mConn.delete(socket.id);
     // mConn.forEach((s, id) => {

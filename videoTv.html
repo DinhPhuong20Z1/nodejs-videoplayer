@@ -10,7 +10,7 @@
 
   <body>
     <h1>Video TV</h1>
-    <video id="videoPlayer2" width="650" controls onseeking="myFunction()">
+    <video id="videoPlayer2" width="650" controls muted onseeking="myFunction()">
       <source src="/video" type="video/mp4" />
     </video>
 
@@ -25,14 +25,10 @@
 
       socket.on("ClickPlayPhone", (data, checkScreen, checkMorote) => {
         let myVideo2 = document.getElementById("videoPlayer2");
-        myVideo2.muted = data.muted;
+        // myVideo2.muted = data.muted;
         myVideo2.volume = data.volume;
         fmData = data.paused;
-        if (!data.paused) {
-          myVideo2.play();
-        } else {
-          myVideo2.pause();
-        }
+        
       });
       var a = true;
       var b = 1;
@@ -43,6 +39,37 @@
         b = Math.random();
         let myVideo2 = document.getElementById("videoPlayer2");
         myVideo2.currentTime = data;
+      });
+
+      socket.on("ClickStartVideo", (data) => {
+        console.log('data',data);
+        let myVideo2 = document.getElementById("videoPlayer2");
+        if (!data) {
+          myVideo2.play();
+        } else {
+          myVideo2.pause();
+        }
+      });
+
+      socket.on("ClickPauseVideo", (data) => {
+        console.log('data',data);
+        let myVideo2 = document.getElementById("videoPlayer2");
+        if (data) {
+          myVideo2.pause();
+        }
+      });
+
+      var myVideo = document.getElementById("videoPlayer2");
+      myVideo.addEventListener("play", function(){
+        
+        let myVideo2 = document.getElementById("videoPlayer2");
+        socket.emit("ClickStartTv", myVideo2.paused);
+      });
+
+      myVideo.addEventListener("pause", function(){
+        
+        let myVideo2 = document.getElementById("videoPlayer2");
+        socket.emit("ClickPauseTv", myVideo2.paused);
       });
 
       window.addEventListener(
@@ -58,8 +85,8 @@
                 checkTv = false;
                 if (checkPhone) {
                   data = {
-                    paused: myVideo.paused,
-                    muted: myVideo.muted,
+                    // paused: myVideo.paused,
+                    // muted: myVideo.muted,
                     volume: myVideo.volume,
                   };
                   socket.emit("ClickPlayTv", data);
@@ -69,8 +96,8 @@
               const checkT = () => {
                 if (checkTv) {
                   data = {
-                    paused: myVideo.paused,
-                    muted: myVideo.muted,
+                    // paused: myVideo.paused,
+                    // muted: myVideo.muted,
                     volume: myVideo.volume,
                   };
                   socket.emit("ClickPlayTv", data);
